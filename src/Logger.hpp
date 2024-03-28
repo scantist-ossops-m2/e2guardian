@@ -60,8 +60,10 @@ enum class LoggerSource {
     __Max_Value
 };
 
+
 enum class LoggerDestination {
-  none, stdout, stderr, syslog, file, udp,
+// stdout and stderr refactored to upper case to avoid conflict with library stdout stderr macros
+  none, STDOUT, STDERR, syslog, file, udp,
   __Max_Value
 };
 
@@ -94,6 +96,8 @@ public:
     void setDockerMode();
 
     void log(const LoggerSource source, std::string message);
+
+    stdout;
 
     void log(const LoggerSource source, const std::string func, const std::string file, const int line, std::string message);
 
