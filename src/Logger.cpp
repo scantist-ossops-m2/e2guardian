@@ -48,8 +48,8 @@ Logger::Logger() {
 
     setLogOutput(LoggerSource::storytrace, LoggerDestination::syslog,"LOG_INFO", false);
 
-    setLogOutput(LoggerSource::debug, LoggerDestination::stdout, "", false);
-    setLogOutput(LoggerSource::trace, LoggerDestination::stdout, "", false);
+    setLogOutput(LoggerSource::debug, LoggerDestination::STDOUT, "", false);
+    setLogOutput(LoggerSource::trace, LoggerDestination::STDOUT, "", false);
 }
 
 Logger::~Logger() {
@@ -390,10 +390,10 @@ void Logger::rmFileLink(FileRec *fileRec) {
 void Logger::setDockerMode() {
     // docker stdout/stderr are not in sync
     // so for debugging send everything to stderr (unbuffered)
-    setDestination(LoggerSource::info, LoggerDestination::stderr);
-    setDestination(LoggerSource::error, LoggerDestination::stderr);
-    setDestination(LoggerSource::warning, LoggerDestination::stderr);
-    setDestination(LoggerSource::accesslog, LoggerDestination::stdout);
+    setDestination(LoggerSource::info, LoggerDestination::STDERR);
+    setDestination(LoggerSource::error, LoggerDestination::STDERR);
+    setDestination(LoggerSource::warning, LoggerDestination::STDERR);
+    setDestination(LoggerSource::accesslog, LoggerDestination::STDOUT);
 }
 
 
@@ -440,10 +440,10 @@ void Logger::sendMessage(const LoggerSource source, std::string &message) {
     switch (destination) {
         case LoggerDestination::none:
             break;
-        case LoggerDestination::stdout:
+        case LoggerDestination::STDOUT:
             std::cout << message << std::endl;
             break;
-        case LoggerDestination::stderr:
+        case LoggerDestination::STDERR:
             std::cerr << message << std::endl;
             break;
         case LoggerDestination::syslog:
