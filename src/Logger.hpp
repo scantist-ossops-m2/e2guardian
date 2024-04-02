@@ -97,8 +97,6 @@ public:
 
     void log(const LoggerSource source, std::string message);
 
-    stdout;
-
     void log(const LoggerSource source, const std::string func, const std::string file, const int line, std::string message);
 
     // Conversion Enum <-> string
