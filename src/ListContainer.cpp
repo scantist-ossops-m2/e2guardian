@@ -822,7 +822,7 @@ bool ListContainer::findEndsWith(const char *string, String &lastcategory, Strin
             if (r >= 0) {
                 lastcategory = category;
                 match = (data + list[r]);
-                return (data + list[r]);
+                return true;
             }
         }
         bool rc;
@@ -833,7 +833,7 @@ bool ListContainer::findEndsWith(const char *string, String &lastcategory, Strin
             }
         }
     }
-    return NULL;
+    return false;
 }
 
 // For phrase lists - grab the text, score and type of a given phrase, based on item number within list
