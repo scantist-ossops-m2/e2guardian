@@ -1,8 +1,5 @@
 # Autoconf script
 
-
-# AC_DEFINE([__SSLMITM],[""],[Define to enable SSL MITM])
-
 AC_PREREQ(2.63)
 AC_INIT(e2guardian, 5.6.0)
 AM_INIT_AUTOMAKE([subdir-objects])
@@ -35,7 +32,7 @@ GCC_VERSION_PATCH=$(echo $GCC_VERSION |cut -d'.' -f3 2>/dev/null)
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h netinet/in.h stdlib.h])
 AC_CHECK_HEADERS([string.h sys/socket.h sys/time.h syslog.h unistd.h locale.h])
-AC_CHECK_HEADERS([sys/types.h sys/un.h sys/poll.h sys/epoll.h sys/resource.h])
+AC_CHECK_HEADERS([sys/types.h sys/un.h sys/poll.h  sys/resource.h])
 AC_CHECK_HEADERS([pwd.h grp.h])
 AC_CHECK_HEADERS([byteswap.h])
 
@@ -465,30 +462,12 @@ AM_CONDITIONAL(NEED_CSCONFIGS, test "x$csconfigs" = "xtrue")
 # install DM lists if necessary
 AM_CONDITIONAL(NEED_DMLISTS, test "x$dmlists" = "xtrue")
 
+#AC_DEFINE(DEBUG_HIGH, 1, [Define to enable high level debug build mode])
 
-# asking user if they want SSL MITM support
-  AC_DEFINE(DEBUG_HIGH, 1, [Define to enable high level debug build mode])
-AC_MSG_CHECKING(for SSL MITM support)
-AC_ARG_ENABLE(
-sslmitm,
-[AS_HELP_STRING([--enable-sslmitm@<:@=yes@:>@],[Enable support for the SSL MITM ])],
-[
-	AC_MSG_RESULT(yes)
-	sslmitm=true
-	SSLMITMSUPPORT=""
-	AC_DEFINE([__SSLMITM],[],[Define to enable SSL MITM ])
-	PKG_CHECK_MODULES([OPENSSL],[ openssl >= 1.0.1])
-	CXXFLAGS="${CXXFLAGS} ${OPENSSL_CFLAGS}"
-	LIBS="${LIBS} ${OPENSSL_LIBS}"
-],
-[
-	AC_MSG_RESULT(no)
-	sslmitm=false
-	SSLMITMSUPPORT="!! Not compiled !! "
-]
-)
-AM_CONDITIONAL(__SSLMITM, test "x$sslmitm" = "xtrue")
-AC_SUBST(SSLMITMSUPPORT)
+# OPENSSL support now included by default
+PKG_CHECK_MODULES([OPENSSL],[ openssl >= 1.0.1])
+CXXFLAGS="${CXXFLAGS} ${OPENSSL_CFLAGS}"
+LIBS="${LIBS} ${OPENSSL_LIBS}"
 
 # asking user if they want DNS auth support
 AC_MSG_CHECKING(for DNS support)
