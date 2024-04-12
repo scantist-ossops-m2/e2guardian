@@ -693,8 +693,10 @@ String String::sort_search()
     while (j <= c) {
         if (ret.empty())
             ret = p[j++];
-        else
-           ret = ret + "+" + p[j++];
+        else {
+            ret += "+";
+            ret += p[j++];
+        }
     }
     DEBUG_debug("Search words after sort are ", ret);
    // delete [] temp;
@@ -708,8 +710,9 @@ String String::CN() {
     while (ret.length() > 62) {
         ret = ret.after(".");
     }
-    ret = "*." + ret;
-    return ret;
+    String ret2("*.");
+    ret2 += ret;
+    return ret2;
 }
 
 //bool String::isNull() {
