@@ -52,6 +52,7 @@ CertificateAuthority::CertificateAuthority(const char *caCert,
     time_t caEnd)
 {
     FILE *fp;
+    char pem[7200];
 
     //load the ca cert
     fp = fopen(caCert, "r");
@@ -64,7 +65,19 @@ CertificateAuthority::CertificateAuthority(const char *caCert,
         log_ssl_errors("Couldn't load ca certificate from ",  caCert);
         exit(1);
     }
+    fclose(fp);
 
+    // open again to get raw PEM for hash
+    fp = fopen(caCert, "r");
+    for (int i = 0;i < 7200;i++) {
+        pem[i] = '\0';
+    }
+    int rc = 0;
+    rc = fread(pem,72,99,fp);
+    if(rc < 1) {
+        E2LOGGER_error("Unable to re-read ca certificate file");
+        exit(1);
+    }
     fclose(fp);
 
     //load the ca priv key
@@ -98,12 +111,23 @@ CertificateAuthority::CertificateAuthority(const char *caCert,
     //TODO should check this is a writable dir
     _certPath = certPath;
     _certPathLen = sizeof(certPath);
-    //	_certLinks = certLinks;
     _certLinks = certPath; // temp to check if this works
-    //_ca_start = 1417872951;  // 6th Dec 2014
-    //_ca_end = _ca_start + 315532800;  // 6th Dec 2024
     _ca_start = caStart;
     _ca_end = caEnd;
+
+    // Generate hash to be added to cert server name to produce serial unique rootCA_PEM/start_date/stop_date
+
+//   ASN1_TIME *not_before = X509_get_notBefore(_caCert);
+//   ASN1_TIME *not_after = X509_get_notAfter(_caCert);
+
+     // Make hash
+     String tem = pem;
+     String tem2((long)caStart), tem3((long)caEnd);
+     tem += tem2;
+     tem += tem3;
+     cert_start_stop_hash = tem.md5();
+     DEBUG_config("modifing string to be hashed (rootCA.pem + cartstart + certend is: ", tem);
+     DEBUG_config("modifing hash is: ", cert_start_stop_hash);
 }
 
 bool CertificateAuthority::getSerial(const char *commonname, struct ca_serial *caser)
@@ -112,10 +136,8 @@ bool CertificateAuthority::getSerial(const char *commonname, struct ca_serial *c
     char cnhash[EVP_MAX_MD_SIZE];
     unsigned int cnhashlen;
 
-    // added to generate different serial number than previous versions
-    //   needs to be added as an option
     std::string sname(commonname );
-    sname += "B";
+    sname += cert_start_stop_hash;
 
     DEBUG_debug("Generating serial no for ", commonname );
 
@@ -486,3 +508,7 @@ bool CertificateAuthority::addExtension(X509 *cert, int nid, char *value)
     return (result > 0) ? true : false;
 }
 
+//String CertificateAuthority::ASN1TIME2String(ASN1_TIME *atime)
+//{
+
+//};

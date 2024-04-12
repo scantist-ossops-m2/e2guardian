@@ -1,6 +1,8 @@
 #ifndef __HPP_CERTIFICATEAUTHORITY
 #define __HPP_CERTIFICATEAUTHORITY
 
+#include "String.hpp"
+
 struct ca_serial {
     ASN1_INTEGER *asn;
     char *charhex;
@@ -41,6 +43,8 @@ class CertificateAuthority
     bool writeCertificate(const char *hostname, X509 *newCert, struct ca_serial *cser);
     EVP_PKEY *getServerPkey();
     bool free_ca_serial(struct ca_serial *cs);
+    String cert_start_stop_hash;
+    //String ASN1TIME2String(ASN1_TIME *atime);
 };
 
 
