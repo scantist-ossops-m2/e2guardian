@@ -290,13 +290,13 @@ generatedcertpath = '@E2CONFDIR@/private/generatedcerts/'
 # required if ssl_mitm is enabled.
 
 #Warning: if you change the cert start/end time from default on a running
-#         system you will need to clear the generated certificate
-#         store and also may get problems on running client browsers
+#         system it is advisable to clear the generated certificate
+#         store.
 
-# generatedcertstart = 1417872951
+# generatedcertstart = 1711926000
 #
 #Generated cert start time (in unix time) - optional
-# defaults to 1417872951 = 6th Dec 2014
+# defaults to 1711926000 = 1st April 2024
 
 # generatedcertend =
 #

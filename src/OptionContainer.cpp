@@ -302,7 +302,8 @@ bool OptionContainer::findCertificateOptions(ConfigReader &cr)
             ret = false;
         }
 
-        time_t def_start = 1417872951; // 6th Dec 2014
+        //time_t def_start = 1417872951; // 6th Dec 2014
+        time_t def_start = 1711926000; // 1st Apr 2024
         time_t ten_years = 315532800;
         cert.gen_cert_start = cr.findoptionI("generatedcertstart");
         if (cert.gen_cert_start < def_start)
